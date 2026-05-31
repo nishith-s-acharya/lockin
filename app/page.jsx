@@ -26,7 +26,7 @@ export default function Home() {
         <GoldTitle>Welcome to Path</GoldTitle>
         <SectionLabel>Welcome to Path</SectionLabel> */}
         <div className="relative z-10 col-span-full lg:col-span-3 flex flex-col items-center justify-center text-center lg:-rotate-2 pointer-events-none" >
-          <Badge variant="gold">Preptron is now live</Badge>
+          <Badge variant="gold">LockIn is now live</Badge>
           <h1 className="font-serif relative text-5xl sm:text-6xl lg:text-7xl tracking-tighter max-w-4xl">
             <GrayTitle>Interview on your schedule</GrayTitle>
             <GoldTitle>with industry experts</GoldTitle>
@@ -67,7 +67,7 @@ export default function Home() {
       </section>
 
       <section className="relative z-10 border-y border-white/10 py-14 flex flex-col items-center justify-center gap-5" >
-      <p className="text-center text-xs font-medium tracking-widest text-stone-400 ">Companies trust Preptron to shape the future of recruitment.</p>
+      <p className="text-center text-xs font-medium tracking-widest text-stone-400 ">Companies trust LockIn to shape the future of recruitment.</p>
       <div className="flex flex-wrap items-center justify-center gap-x-16 gap-y-8 sm:gap-23 pt-2" >
        {LOGOS.map((logo, index)=>(
         <Image

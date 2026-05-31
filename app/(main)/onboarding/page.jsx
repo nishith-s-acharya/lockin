@@ -32,7 +32,7 @@ export default function OnboardingPage() {
   };
 
   useEffect(() => {
-    if (data && !loading) {
+    if (data?.success && !loading) {
       router.push(role === "INTERVIEWER" ? "/dashboard" : "/explore");
     }
   }, [data, loading]);
@@ -81,7 +81,7 @@ export default function OnboardingPage() {
           <h1 className="font-serif text-5xl leading-tight tracking-tighter mt-1">
             <GrayTitle>How will you be</GrayTitle>
             <br />
-            <GoldTitle>using Prept?</GoldTitle>
+            <GoldTitle>using LockIn?</GoldTitle>
           </h1>
           <p className="text-sm text-stone-500 font-light mt-4 leading-relaxed max-w-md mx-auto">
             This helps us personalise your experience. You can&apos;t change this later.

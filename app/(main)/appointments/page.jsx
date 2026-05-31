@@ -8,7 +8,12 @@ import { Button } from "@/components/ui/button";
 import { CalendarDays } from "lucide-react";
 
 export default async function MyAppointmentsPage() {
-  const user = await currentUser();
+  let user;
+  try {
+    user = await currentUser();
+  } catch {
+    redirect("/");
+  }
   if (!user) redirect("/");
 
   const appointments = await getIntervieweeAppointments();

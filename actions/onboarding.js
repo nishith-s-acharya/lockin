@@ -22,9 +22,26 @@ export const completeOnboarding = async (data) => {
     }
 
     try {
-        await db.user.update({
+        const name = `${user.firstName ?? ""} ${user.lastName ?? ""}`.trim();
+        const email = user.emailAddresses?.[0]?.emailAddress ?? "";
+
+        await db.user.upsert({
             where: { clerkUserId: user.id },
-            data: {
+            create: {
+                clerkUserId: user.id,
+                name,
+                email,
+                imageUrl: user.imageUrl,
+                role,
+                ...(role === "INTERVIEWER" && {
+                    title,
+                    company,
+                    yearsExp,
+                    bio,
+                    categories,
+                }),
+            },
+            update: {
                 role,
                 ...(role === "INTERVIEWER" && {
                     title,
@@ -38,7 +55,7 @@ export const completeOnboarding = async (data) => {
 
         return { success: true };
     } catch (error) {
-        console.log(error);
+        console.error("completeOnboarding error:", error);
         return { error: "Failed to complete onboarding" };
     }
 };
