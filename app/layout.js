@@ -22,6 +22,9 @@ const dmSans = DM_Sans({
 export const metadata = {
   title: "LockIn",
   description: "inteview prepration platform",
+  icons: {
+    icon: "/favicon.png",
+  },
 };
 
 export default function RootLayout({ children }) {
