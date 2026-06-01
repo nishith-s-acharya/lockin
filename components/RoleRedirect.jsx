@@ -14,10 +14,6 @@ export default function RoleRedirect({ role }) {
   const redirectTarget = useMemo(() => {
     if (role === "UNASSIGNED" && pathname !== "/onboarding")
       return "/onboarding";
-    if (role === "INTERVIEWER" && pathname.startsWith("/onboarding"))
-      return "/dashboard";
-    if (role === "INTERVIEWEE" && pathname.startsWith("/onboarding"))
-      return "/explore";
     if (
       role === "INTERVIEWEE" &&
       INTERVIEWER_ONLY.some((p) => pathname.startsWith(p))
