@@ -23,6 +23,14 @@ export const getIntervieweeAppointments = async () => {
           categories: true,
         },
       },
+      interviewee: {
+        select: {
+          name: true,
+          imageUrl: true,
+          email: true,
+          clerkUserId: true,
+        },
+      },
       feedback: true,
     },
     orderBy: { startTime: "desc" },

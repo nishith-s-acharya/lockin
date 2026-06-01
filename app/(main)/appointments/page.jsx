@@ -5,7 +5,7 @@ import { getIntervieweeAppointments } from "@/actions/appointments";
 import { AppointmentCard } from "@/components/AppointmentCard";
 
 import { Button } from "@/components/ui/button";
-import { CalendarDays } from "lucide-react";
+import { CalendarDays, AlertCircle } from "lucide-react";
 
 export default async function MyAppointmentsPage() {
   let user;
@@ -16,7 +16,16 @@ export default async function MyAppointmentsPage() {
   }
   if (!user) redirect("/");
 
-  const appointments = await getIntervieweeAppointments();
+  let appointments = [];
+  let error = null;
+
+  try {
+    appointments = await getIntervieweeAppointments();
+  } catch (err) {
+    console.error("Appointments fetch error:", err);
+    error = err?.message || "Failed to load appointments";
+  }
+
   const now = new Date();
   const scheduled = appointments.filter(
     (a) => a.status === "SCHEDULED" && new Date(a.startTime) > now
@@ -27,12 +36,35 @@ export default async function MyAppointmentsPage() {
 
   return (
     <main className="min-h-screen bg-black">
-      {/* ── Page header ── */}
-     
+      {/* Page header */}
+      <div className="max-w-6xl mx-auto px-8 lg:px-0 pt-8 pb-4">
+        <div className="bg-[#0f0f11] border border-white/10 rounded-2xl p-8">
+          <span className="w-10 h-10 rounded-xl bg-amber-400/10 border border-amber-400/20 flex items-center justify-center mb-4">
+            <CalendarDays size={18} className="text-amber-400" />
+          </span>
+          <h1 className="font-serif text-2xl tracking-tight text-stone-200">
+            My Appointments
+          </h1>
+          <p className="text-xs text-stone-500 font-light mt-1">
+            All your scheduled and past sessions.
+          </p>
+        </div>
+      </div>
 
       <div className="max-w-6xl mx-auto px-8 lg:px-0 py-8 flex flex-col gap-14">
-        {/* ── Empty state ── */}
-        {appointments.length === 0 && (
+        {/* Error state */}
+        {error && (
+          <div className="bg-red-500/10 border border-red-500/20 rounded-2xl p-8 flex items-center gap-4">
+            <AlertCircle size={20} className="text-red-400 shrink-0" />
+            <div>
+              <p className="text-sm text-red-400 font-medium">Failed to load appointments</p>
+              <p className="text-xs text-red-400/70 mt-1">{error}</p>
+            </div>
+          </div>
+        )}
+
+        {/* Empty state */}
+        {!error && appointments.length === 0 && (
           <div className="flex flex-col items-center justify-center py-28 gap-5 text-center">
             <span className="w-16 h-16 rounded-2xl bg-amber-400/10 border border-amber-400/20 flex items-center justify-center text-3xl">
               <CalendarDays size={28} className="text-amber-400" />
@@ -51,7 +83,7 @@ export default async function MyAppointmentsPage() {
           </div>
         )}
 
-        {/* ── Upcoming ── */}
+        {/* Upcoming */}
         {scheduled.length > 0 && (
           <div className="flex flex-col gap-5">
             <div className="flex items-center gap-4">
@@ -68,7 +100,7 @@ export default async function MyAppointmentsPage() {
           </div>
         )}
 
-        {/* ── Past ── */}
+        {/* Past */}
         {past.length > 0 && (
           <div className="flex flex-col gap-5">
             <div className="flex items-center gap-4">
