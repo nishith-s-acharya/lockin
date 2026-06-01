@@ -2,18 +2,37 @@
 
 import { useState } from "react";
 import { useAuth } from "@clerk/nextjs";
+import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Calendar, Clock, Video, Sparkles } from "lucide-react";
+import { Calendar, Clock, Video, Sparkles, X, Loader2 } from "lucide-react";
 import { formatDate, formatTime, formatDuration } from "@/lib/helper";
 import { RATING_LABEL, RATING_STYLES, STATUS_STYLES } from "@/lib/data";
 import { FeedbackModal } from "@/components/FeedBackModel";
+import { cancelBooking } from "@/actions/cancelBooking";
+import { toast } from "sonner";
 
 export function AppointmentCard({ booking, mode, isPast = false }) {
     const [feedbackOpen, setFeedbackOpen] = useState(false);
+    const [confirmCancel, setConfirmCancel] = useState(false);
+    const [cancelling, setCancelling] = useState(false);
     const { has } = useAuth();
+    const router = useRouter();
+
+    const handleCancel = async () => {
+        setCancelling(true);
+        const result = await cancelBooking(booking.id);
+        if (result.error) {
+            toast.error(result.error);
+            setCancelling(false);
+            setConfirmCancel(false);
+        } else {
+            toast.success("Booking cancelled. Credits refunded to interviewee.");
+            router.refresh();
+        }
+    };
 
     const {
         startTime,
@@ -164,6 +183,45 @@ export function AppointmentCard({ booking, mode, isPast = false }) {
                                     Join call
                                 </Link>
                             </Button>
+                        )}
+
+                        {!isPast && isUpcoming && mode === "interviewer" && (
+                            confirmCancel ? (
+                                <div className="flex items-center gap-2">
+                                    <Button
+                                        variant="destructive"
+                                        size="sm"
+                                        className="gap-1.5 bg-red-500/15 border border-red-500/30 text-red-400 hover:bg-red-500/25"
+                                        onClick={handleCancel}
+                                        disabled={cancelling}
+                                    >
+                                        {cancelling ? (
+                                            <><Loader2 size={13} className="animate-spin" /> Cancelling…</>
+                                        ) : (
+                                            <>Confirm cancel</>
+                                        )}
+                                    </Button>
+                                    <Button
+                                        variant="outline"
+                                        size="sm"
+                                        className="border-white/10 text-stone-400"
+                                        onClick={() => setConfirmCancel(false)}
+                                        disabled={cancelling}
+                                    >
+                                        Keep
+                                    </Button>
+                                </div>
+                            ) : (
+                                <Button
+                                    variant="outline"
+                                    size="sm"
+                                    className="gap-1.5 border-red-500/20 text-red-400 hover:bg-red-500/10 hover:border-red-500/30"
+                                    onClick={() => setConfirmCancel(true)}
+                                >
+                                    <X size={13} />
+                                    Cancel
+                                </Button>
+                            )
                         )}
 
                         {recordingUrl && has?.({ plan: "pro" }) && (
