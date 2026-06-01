@@ -37,6 +37,28 @@ export const getCallData = async (callId) => {
   const isInterviewee = booking.interviewee.clerkUserId === user.id;
   if (!isInterviewer && !isInterviewee) return { error: "Forbidden" };
 
+  // ── Time-based access control ──
+  const now = new Date();
+  const earlyJoinMinutes = 10; // can join 10 min early
+  const lateBufferMinutes = 30; // call stays open 30 min after end
+  const windowStart = new Date(booking.startTime.getTime() - earlyJoinMinutes * 60000);
+  const windowEnd = new Date(booking.endTime.getTime() + lateBufferMinutes * 60000);
+
+  if (now < windowStart) {
+    return {
+      error: "Too early",
+      startTime: booking.startTime.toISOString(),
+      endTime: booking.endTime.toISOString(),
+    };
+  }
+  if (now > windowEnd) {
+    return {
+      error: "Call ended",
+      startTime: booking.startTime.toISOString(),
+      endTime: booking.endTime.toISOString(),
+    };
+  }
+
   const streamClient = new StreamClient(
     process.env.NEXT_PUBLIC_STREAM_API_KEY,
     process.env.STREAM_SECRET_KEY
