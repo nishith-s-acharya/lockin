@@ -33,7 +33,8 @@ export default function OnboardingPage() {
 
   useEffect(() => {
     if (data?.success && !loading) {
-      router.push(role === "INTERVIEWER" ? "/dashboard" : "/explore");
+      // Full page reload to ensure Header re-fetches the updated role
+      window.location.href = role === "INTERVIEWER" ? "/dashboard" : "/explore";
     }
   }, [data, loading]);
 
