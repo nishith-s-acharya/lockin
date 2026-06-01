@@ -36,7 +36,7 @@ export default function Home() {
           </p> 
 
           <div className="relative flex justify-center gap-2 sm:gap-4 mt-10 sm:w-auto pointer-events-auto">
-            <Link href="/explore">
+            <Link href="/onboarding">
             <Button variant="gold" size="hero">Get Started</Button>
             </Link>
             <Link href="/explore">
