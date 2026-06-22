@@ -29,6 +29,8 @@ export default async function InterviewerDashboardPage() {
 
   const dbUser = await db.user.findUnique({ where: { clerkUserId: user.id } });
   if (!dbUser) redirect("/onboarding");
+  if (dbUser.role === "UNASSIGNED") redirect("/onboarding");
+  if (dbUser.role !== "INTERVIEWER") redirect("/appointments");
 
   const [availability, appointments, stats, withdrawalHistory, profile] =
     await Promise.all([

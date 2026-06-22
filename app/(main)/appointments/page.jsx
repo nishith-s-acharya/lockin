@@ -3,6 +3,7 @@ import { redirect } from "next/navigation";
 import Link from "next/link";
 import { getIntervieweeAppointments } from "@/actions/appointments";
 import { AppointmentCard } from "@/components/AppointmentCard";
+import { db } from "@/lib/prisma";
 
 import { Button } from "@/components/ui/button";
 import { CalendarDays, AlertCircle } from "lucide-react";
@@ -15,6 +16,11 @@ export default async function MyAppointmentsPage() {
     redirect("/");
   }
   if (!user) redirect("/");
+
+  const dbUser = await db.user.findUnique({ where: { clerkUserId: user.id } });
+  if (!dbUser) redirect("/onboarding");
+  if (dbUser.role === "UNASSIGNED") redirect("/onboarding");
+  if (dbUser.role === "INTERVIEWER") redirect("/dashboard");
 
   let appointments = [];
   let error = null;

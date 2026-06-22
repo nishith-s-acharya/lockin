@@ -219,7 +219,7 @@ export default function EarningsSection({ stats, history }) {
                 <div className="rounded-xl bg-[#141417] border border-white/8 p-4 flex flex-col gap-2">
                   <div className="flex justify-between text-xs text-stone-500">
                     <span>Balance (1 Cr = $5)</span>
-                    <span className="text-green-400">${balance}</span>
+                    <span className="text-green-400">${balance.toFixed(2)}</span>
                   </div>
                   <div className="flex justify-between text-xs text-stone-500">
                     <span>Platform fee (20%)</span>
